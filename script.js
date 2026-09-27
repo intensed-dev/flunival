@@ -5,68 +5,68 @@ const status = document.querySelector("#status");
 const welcome = document.querySelector("#welcome");
 
 const badges = [
-  ["rocket", "First Flight", "Made your first public repository.", p => p.public_repos >= 1],
-  ["git-pull-request", "Pull Shark", "Opened at least 10 pull requests.", p => p.prs >= 10],
-  ["git-merge", "Merge Master", "Had a pull request merged.", p => p.mergedPrs >= 1],
-  ["star", "Starstruck", "Collected at least 25 repository stars.", p => p.stars >= 25],
-  ["git-fork", "Forklift", "Has a repository that was forked 5+ times.", p => p.topRepoForks >= 5],
-  ["book-open", "Repo Hoarder", "Published at least 10 public repositories.", p => p.public_repos >= 10],
-  ["languages", "Polyglot", "Used at least 5 different programming languages.", p => p.languages >= 5],
-  ["circle-dot", "Issue Hunter", "Opened at least 10 issues.", p => p.issues >= 10],
-  ["package-check", "Ship It", "Has a public repository with a release.", p => p.hasRelease],
-  ["zap", "Night Owl", "Made a public GitHub event between midnight and 5 AM.", p => p.nightOwl],
-  ["sunrise", "Early Bird", "Made a public GitHub event between 5 AM and 8 AM.", p => p.earlyBird],
-  ["archive", "Archivist", "Owns at least 3 archived repositories.", p => p.archived >= 3],
-  ["trophy", "Top Shelf", "Has a repository with 100+ stars.", p => p.topRepoStars >= 100],
-  ["users-round", "Community", "Has at least 25 followers.", p => p.followers >= 25],
-  ["calendar-check", "Veteran", "Has been on GitHub for at least 5 years.", p => p.accountAge >= 5],
+  ["rocket", "First Flight", "Made your first public repository.", p => p.public_repos >= 1, "common"],
+  ["git-pull-request", "Pull Shark", "Opened at least 10 pull requests.", p => p.prs >= 10, "common"],
+  ["git-merge", "Merge Master", "Had a pull request merged.", p => p.mergedPrs >= 1, "rare"],
+  ["star", "Starstruck", "Collected at least 25 repository stars.", p => p.stars >= 25, "rare"],
+  ["git-fork", "Forklift", "Has a repository that was forked 5+ times.", p => p.topRepoForks >= 5, "rare"],
+  ["book-open", "Repo Hoarder", "Published at least 10 public repositories.", p => p.public_repos >= 10, "rare"],
+  ["languages", "Polyglot", "Used at least 5 different programming languages.", p => p.languages >= 5, "rare"],
+  ["circle-dot", "Issue Hunter", "Opened at least 10 issues.", p => p.issues >= 10, "rare"],
+  ["package-check", "Ship It", "Has a public repository with a release.", p => p.hasRelease, "rare"],
+  ["zap", "Night Owl", "Made a public GitHub event between midnight and 5 AM.", p => p.nightOwl, "common"],
+  ["sunrise", "Early Bird", "Made a public GitHub event between 5 AM and 8 AM.", p => p.earlyBird, "common"],
+  ["archive", "Archivist", "Owns at least 3 archived repositories.", p => p.archived >= 3, "rare"],
+  ["trophy", "Top Shelf", "Has a repository with 100+ stars.", p => p.topRepoStars >= 100, "epic"],
+  ["users-round", "Community", "Has at least 25 followers.", p => p.followers >= 25, "common"],
+  ["calendar-check", "Veteran", "Has been on GitHub for at least 5 years.", p => p.accountAge >= 5, "epic"],
 
-  ["sparkles", "Fresh Start", "Created a repository in the last 30 days.", p => p.recentRepo],
-  ["flame", "On Fire", "Made at least 10 public events in the recent activity window.", p => p.events >= 10],
-  ["code-2", "Code Smith", "Has at least 25 public repositories.", p => p.public_repos >= 25],
-  ["star-half", "Rising Star", "Has at least 5 repository stars.", p => p.stars >= 5],
-  ["git-branch", "Branch Manager", "Made at least 10 public push events.", p => p.pushes >= 10],
-  ["terminal", "Command Line", "Made at least 10 public push events.", p => p.pushes >= 10],
-  ["workflow", "Automator", "Triggered a public GitHub Actions workflow.", p => p.hasWorkflow],
-  ["tag", "Release Ready", "Created at least 3 public releases.", p => p.releases >= 3],
-  ["circle-check", "Issue Resolver", "Closed at least 10 public issues.", p => p.closedIssues >= 10],
-  ["message-square", "Open Source Voice", "Commented on at least 10 public issues or pull requests.", p => p.comments >= 10],
-  ["eye", "Watched", "Has at least one public repository with watchers.", p => p.watchers > 0],
-  ["heart", "Well Known", "Has at least 100 followers.", p => p.followers >= 100],
-  ["layers-3", "Collection", "Owns at least 3 public repositories with 25+ stars.", p => p.popularRepos >= 3],
-  ["crown", "Headliner", "Has a repository with 500+ stars.", p => p.topRepoStars >= 500],
-  ["gem", "Hidden Gem", "Has a repository with 10+ stars but fewer than 5 forks.", p => p.hiddenGem],
-  ["clock-3", "Weekend Coder", "Made a public GitHub event on a weekend.", p => p.weekend],
-  ["moon", "Midnight Committer", "Made a public GitHub event between 11 PM and midnight.", p => p.midnight],
-  ["history", "Time Traveler", "Has been on GitHub for at least 10 years.", p => p.accountAge >= 10],
-  ["book-marked", "Curator", "Has at least 5 archived repositories.", p => p.archived >= 5],
-  ["folder-git-2", "Monorepo Mind", "Made a public push containing 20+ commits.", p => p.bigPush],
-  ["users", "Crowd Favorite", "Has at least 500 followers.", p => p.followers >= 500],
-  ["badge-check", "Established", "Has at least 50 public repositories.", p => p.public_repos >= 50],
-  ["git-fork", "Tourist", "Forked a repository with 100+ stars.", p => p.forkedPopular],
-  ["landmark", "Big League", "Had a pull request merged in a repository with 100+ stars.", p => p.mergedExternalPopularPr],
-  ["send", "Outside Help", "Had a pull request merged in someone else's repository.", p => p.mergedExternalPr],
-  ["rocket", "Launch Sequence", "Created a public repository and pushed to it in the same activity window.", p => p.createdAndPushed],
-  ["shuffle", "Repo Tourist", "Publicly contributed to a repository you do not own.", p => p.externalActivity],
-  ["git-commit-horizontal", "Commit Machine", "Made a public push containing 20+ commits.", p => p.bigPush],
-  ["copy", "Ctrl+C Energy", "Forked at least 5 public repositories.", p => p.forksCreated >= 5],
-  ["dice-5", "Chaos Agent", "Had public activity across 5+ different repositories recently.", p => p.activeRepos >= 5],
-  ["orbit", "Everywhere At Once", "Had public activity across 10+ different repositories recently.", p => p.activeRepos >= 10],
-  ["ghost", "Sneaky Contributor", "Had a merged PR in a repository you do not own.", p => p.mergedExternalPr],
-  ["scan-search", "Archaeologist", "Contributed to a repository created before your GitHub account.", p => p.olderRepoContribution],
-  ["party-popper", "Plot Twist", "Had a public event type you probably forgot existed.", p => p.weirdEvent],
-  ["badge", "Badge Goblin", "Unlocked at least 20 custom Flunival badges.", p => p.unlockedCount >= 20],
-  ["infinity", "Never Offline", "Had public activity on 3 different days in the recent activity window.", p => p.activeDays >= 3],
-  ["coffee", "One More Commit", "Made public activity after 10 PM.", p => p.lateNight]
+  ["sparkles", "Fresh Start", "Created a repository in the last 30 days.", p => p.recentRepo, "common"],
+  ["flame", "On Fire", "Made at least 10 public events in the recent activity window.", p => p.events >= 10, "rare"],
+  ["code-2", "Code Smith", "Has at least 25 public repositories.", p => p.public_repos >= 25, "rare"],
+  ["star-half", "Rising Star", "Has at least 5 repository stars.", p => p.stars >= 5, "rare"],
+  ["git-branch", "Branch Manager", "Made at least 10 public push events.", p => p.pushes >= 10, "common"],
+  ["terminal", "Command Line", "Made at least 10 public push events.", p => p.pushes >= 10, "common"],
+  ["workflow", "Automator", "Triggered a public GitHub Actions workflow.", p => p.hasWorkflow, "epic"],
+  ["tag", "Release Ready", "Created at least 3 public releases.", p => p.releases >= 3, "rare"],
+  ["circle-check", "Issue Resolver", "Closed at least 10 public issues.", p => p.closedIssues >= 10, "rare"],
+  ["message-square", "Open Source Voice", "Commented on at least 10 public issues or pull requests.", p => p.comments >= 10, "rare"],
+  ["eye", "Watched", "Has at least one public repository with watchers.", p => p.watchers > 0, "common"],
+  ["heart", "Well Known", "Has at least 100 followers.", p => p.followers >= 100, "rare"],
+  ["layers-3", "Collection", "Owns at least 3 public repositories with 25+ stars.", p => p.popularRepos >= 3, "epic"],
+  ["crown", "Headliner", "Has a repository with 500+ stars.", p => p.topRepoStars >= 500, "legendary"],
+  ["gem", "Hidden Gem", "Has a repository with 10+ stars but fewer than 5 forks.", p => p.hiddenGem, "epic"],
+  ["clock-3", "Weekend Coder", "Made a public GitHub event on a weekend.", p => p.weekend, "common"],
+  ["moon", "Midnight Committer", "Made a public GitHub event between 11 PM and midnight.", p => p.midnight, "rare"],
+  ["history", "Time Traveler", "Has been on GitHub for at least 10 years.", p => p.accountAge >= 10, "legendary"],
+  ["book-marked", "Curator", "Has at least 5 archived repositories.", p => p.archived >= 5, "epic"],
+  ["folder-git-2", "Monorepo Mind", "Made a public push containing 20+ commits.", p => p.bigPush, "legendary"],
+  ["users", "Crowd Favorite", "Has at least 500 followers.", p => p.followers >= 500, "legendary"],
+  ["badge-check", "Established", "Has at least 50 public repositories.", p => p.public_repos >= 50, "epic"],
+  ["git-fork", "Tourist", "Forked a repository with 100+ stars.", p => p.forkedPopular, "epic"],
+  ["landmark", "Big League", "Had a pull request merged in a repository with 100+ stars.", p => p.mergedExternalPopularPr, "rare"],
+  ["send", "Outside Help", "Had a pull request merged in someone else's repository.", p => p.mergedExternalPr, "rare"],
+  ["rocket", "Launch Sequence", "Created a public repository and pushed to it in the same activity window.", p => p.createdAndPushed, "common"],
+  ["shuffle", "Repo Tourist", "Publicly contributed to a repository you do not own.", p => p.externalActivity, "rare"],
+  ["git-commit-horizontal", "Commit Machine", "Made a public push containing 20+ commits.", p => p.bigPush, "common"],
+  ["copy", "Ctrl+C Energy", "Forked at least 5 public repositories.", p => p.forksCreated >= 5, "rare"],
+  ["dice-5", "Chaos Agent", "Had public activity across 5+ different repositories recently.", p => p.activeRepos >= 5, "common"],
+  ["orbit", "Everywhere At Once", "Had public activity across 10+ different repositories recently.", p => p.activeRepos >= 10, "common"],
+  ["ghost", "Sneaky Contributor", "Had a merged PR in a repository you do not own.", p => p.mergedExternalPr, "epic"],
+  ["scan-search", "Archaeologist", "Contributed to a repository created before your GitHub account.", p => p.olderRepoContribution, "rare"],
+  ["party-popper", "Plot Twist", "Had a public event type you probably forgot existed.", p => p.weirdEvent, "legendary"],
+  ["badge", "Badge Goblin", "Unlocked at least 20 custom Flunival badges.", p => p.unlockedCount >= 20, "epic"],
+  ["infinity", "Never Offline", "Had public activity on 3 different days in the recent activity window.", p => p.activeDays >= 3, "common"],
+  ["coffee", "One More Commit", "Made public activity after 10 PM.", p => p.lateNight, "rare"]
 ];
 
-const stats = [
-  ["users", p => p.followers, "Followers"],
-  ["git-fork", p => p.public_repos, "Public repositories"],
-  ["star", p => p.stars, "Repository stars"],
-  ["git-pull-request", p => p.prs, "Pull requests"],
-  ["circle-dot", p => p.issues, "Issues opened"],
-  ["calendar-days", p => new Date(p.created_at).getFullYear(), "Joined GitHub"]
+const rarityRank = { common: 1, rare: 2, epic: 3, legendary: 4 };\n\nconst stats = [
+  ["users", p => p.followers, "Followers", "common"],
+  ["git-fork", p => p.public_repos, "Public repositories", "common"],
+  ["star", p => p.stars, "Repository stars", "common"],
+  ["git-pull-request", p => p.prs, "Pull requests", "common"],
+  ["circle-dot", p => p.issues, "Issues opened", "common"],
+  ["calendar-days", p => new Date(p.created_at).getFullYear(), "Joined GitHub", "common"]
 ];
 
 function number(value) {
@@ -95,7 +95,14 @@ function renderStatCards(profileData) {
 }
 
 function renderAchievements(profileData) {
-  const earned = badges.filter(([, , , check]) => check(profileData));
+  const ranked = [...badges].map((badge, index) => ({
+    badge,
+    index,
+    unlocked: badge[3](profileData)
+  })).sort((a, b) => {
+    if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
+    return (rarityRank[b.badge[4]] || 0) - (rarityRank[a.badge[4]] || 0);
+  });
 
   return `
     <section class="achievement-section">
@@ -104,17 +111,18 @@ function renderAchievements(profileData) {
           <div class="section-kicker">Achievements</div>
           <h3>Custom badges</h3>
         </div>
-        <span class="achievement-count">${earned.length} / ${badges.length} unlocked</span>
+        <span class="achievement-count">${ranked.filter(item => item.unlocked).length} / ${badges.length} unlocked</span>
       </div>
       <div class="achievement-grid">
-        ${badges.map(([icon, name, description, check]) => {
-          const unlocked = check(profileData);
+        ${ranked.map(({ badge, unlocked }) => {
+          const [icon, name, description, check, rarity] = badge;
           return `
-            <article class="achievement ${unlocked ? "unlocked" : "locked"}">
+            <article class="achievement ${unlocked ? "unlocked" : "locked"} rarity-${rarity}">
               <span class="achievement-icon"><i data-lucide="${icon}"></i></span>
               <span class="achievement-copy">
                 <strong>${name}</strong>
                 <small>${description}</small>
+                <em class="achievement-rarity">${rarity}</em>
               </span>
               <span class="achievement-state">
                 <i data-lucide="${unlocked ? "check" : "lock"}"></i>
@@ -126,7 +134,6 @@ function renderAchievements(profileData) {
     </section>
   `;
 }
-
 function render(profileData) {
   profile.innerHTML = `
     <div class="profile-head">
@@ -255,7 +262,7 @@ async function load(username) {
     user.forkedPopular = events.some(event =>
       event.type === "ForkEvent" && event.payload?.forkee?.parent?.stargazers_count >= 100
     );
-    user.unlockedCount = badges.filter(([, , , check]) => check(user)).length;
+    user.unlockedCount = badges.filter(badge => badge[3](user)).length;
 
     const externalPrRepos = [...new Set(events.filter(event =>
       event.type === "PullRequestEvent" &&
