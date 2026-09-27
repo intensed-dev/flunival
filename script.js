@@ -19,7 +19,30 @@ const badges = [
   ["archive", "Archivist", "Owns at least 3 archived repositories.", p => p.archived >= 3],
   ["trophy", "Top Shelf", "Has a repository with 100+ stars.", p => p.topRepoStars >= 100],
   ["users-round", "Community", "Has at least 25 followers.", p => p.followers >= 25],
-  ["calendar-check", "Veteran", "Has been on GitHub for at least 5 years.", p => p.accountAge >= 5]
+  ["calendar-check", "Veteran", "Has been on GitHub for at least 5 years.", p => p.accountAge >= 5],
+
+  ["sparkles", "Fresh Start", "Created a repository in the last 30 days.", p => p.recentRepo],
+  ["flame", "On Fire", "Made at least 10 public events in the recent activity window.", p => p.events >= 10],
+  ["code-2", "Code Smith", "Has at least 25 public repositories.", p => p.public_repos >= 25],
+  ["star-half", "Rising Star", "Has at least 5 repository stars.", p => p.stars >= 5],
+  ["git-branch", "Branch Manager", "Made at least 10 public push events.", p => p.pushes >= 10],
+  ["terminal", "Command Line", "Made at least 10 public push events.", p => p.pushes >= 10],
+  ["workflow", "Automator", "Triggered a public GitHub Actions workflow.", p => p.hasWorkflow],
+  ["tag", "Release Ready", "Created at least 3 public releases.", p => p.releases >= 3],
+  ["circle-check", "Issue Resolver", "Closed at least 10 public issues.", p => p.closedIssues >= 10],
+  ["message-square", "Open Source Voice", "Commented on at least 10 public issues or pull requests.", p => p.comments >= 10],
+  ["eye", "Watched", "Has at least one public repository with watchers.", p => p.watchers > 0],
+  ["heart", "Well Known", "Has at least 100 followers.", p => p.followers >= 100],
+  ["layers-3", "Collection", "Owns at least 3 public repositories with 25+ stars.", p => p.popularRepos >= 3],
+  ["crown", "Headliner", "Has a repository with 500+ stars.", p => p.topRepoStars >= 500],
+  ["gem", "Hidden Gem", "Has a repository with 10+ stars but fewer than 5 forks.", p => p.hiddenGem],
+  ["clock-3", "Weekend Coder", "Made a public GitHub event on a weekend.", p => p.weekend],
+  ["moon", "Midnight Committer", "Made a public GitHub event between 11 PM and midnight.", p => p.midnight],
+  ["history", "Time Traveler", "Has been on GitHub for at least 10 years.", p => p.accountAge >= 10],
+  ["book-marked", "Curator", "Has at least 5 archived repositories.", p => p.archived >= 5],
+  ["folder-git-2", "Monorepo Mind", "Has a repository with more than 20,000 lines changed in a public event.", p => p.bigPush],
+  ["users", "Crowd Favorite", "Has at least 500 followers.", p => p.followers >= 500],
+  ["badge-check", "Established", "Has at least 50 public repositories.", p => p.public_repos >= 50]
 ];
 
 const stats = [
@@ -119,7 +142,7 @@ async function load(username) {
   input.value = username;
   setStatus("");
   profile.hidden = true;
-  welcome.hidden = true;
+  welcome.hidden = false;
 
   try {
     const api = "https://api.github.com";
@@ -149,7 +172,17 @@ async function load(username) {
       event.type === "PullRequestEvent" && event.payload?.pull_request?.merged
     ).length;
     user.issues = events.filter(event => event.type === "IssuesEvent").length;
+    user.closedIssues = events.filter(event =>
+      event.type === "IssuesEvent" && event.payload?.action === "closed"
+    ).length;
+    user.comments = events.filter(event =>
+      event.type === "IssueCommentEvent" || event.type === "PullRequestReviewCommentEvent"
+    ).length;
+    user.pushes = events.filter(event => event.type === "PushEvent").length;
+    user.events = events.length;
     user.hasRelease = events.some(event => event.type === "ReleaseEvent");
+    user.releases = events.filter(event => event.type === "ReleaseEvent").length;
+    user.hasWorkflow = events.some(event => event.type === "WorkflowRunEvent");
     user.nightOwl = events.some(event => {
       const hour = new Date(event.created_at).getHours();
       return hour >= 0 && hour < 5;
@@ -158,6 +191,26 @@ async function load(username) {
       const hour = new Date(event.created_at).getHours();
       return hour >= 5 && hour < 8;
     });
+    user.midnight = events.some(event => {
+      const hour = new Date(event.created_at).getHours();
+      return hour >= 23 || hour === 0;
+    });
+    user.weekend = events.some(event => {
+      const day = new Date(event.created_at).getDay();
+      return day === 0 || day === 6;
+    });
+    user.recentRepo = repos.some(repo =>
+      (Date.now() - new Date(repo.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000
+    );
+    user.popularRepos = repos.filter(repo => repo.stargazers_count >= 25).length;
+    user.hiddenGem = repos.some(repo =>
+      repo.stargazers_count >= 10 && repo.forks_count < 5
+    );
+    user.watchers = repos.reduce((sum, repo) => sum + repo.watchers_count, 0);
+    user.bigPush = events.some(event =>
+      event.type === "PushEvent" &&
+      event.payload?.distinct_size >= 20
+    );
     user.accountAge = Math.floor(
       (Date.now() - new Date(user.created_at).getTime()) / (365.25 * 24 * 60 * 60 * 1000)
     );
