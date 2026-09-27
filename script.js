@@ -9,7 +9,7 @@ const badges = [
   ["git-pull-request", "Pull Shark", "Opened at least 10 pull requests.", p => p.prs >= 10],
   ["git-merge", "Merge Master", "Had a pull request merged.", p => p.mergedPrs >= 1],
   ["star", "Starstruck", "Collected at least 25 repository stars.", p => p.stars >= 25],
-  ["git-fork", "Forklift", "Created a repository that has been forked 5+ times.", p => p.forks >= 5],
+  ["git-fork", "Forklift", "Has a repository that was forked 5+ times.", p => p.topRepoForks >= 5],
   ["book-open", "Repo Hoarder", "Published at least 10 public repositories.", p => p.public_repos >= 10],
   ["languages", "Polyglot", "Used at least 5 different programming languages.", p => p.languages >= 5],
   ["circle-dot", "Issue Hunter", "Opened at least 10 issues.", p => p.issues >= 10],
@@ -40,9 +40,24 @@ const badges = [
   ["moon", "Midnight Committer", "Made a public GitHub event between 11 PM and midnight.", p => p.midnight],
   ["history", "Time Traveler", "Has been on GitHub for at least 10 years.", p => p.accountAge >= 10],
   ["book-marked", "Curator", "Has at least 5 archived repositories.", p => p.archived >= 5],
-  ["folder-git-2", "Monorepo Mind", "Has a repository with more than 20,000 lines changed in a public event.", p => p.bigPush],
+  ["folder-git-2", "Monorepo Mind", "Made a public push containing 20+ commits.", p => p.bigPush],
   ["users", "Crowd Favorite", "Has at least 500 followers.", p => p.followers >= 500],
   ["badge-check", "Established", "Has at least 50 public repositories.", p => p.public_repos >= 50]
+  ["git-fork", "Tourist", "Forked a repository with 100+ stars.", p => p.forkedPopular],
+  ["landmark", "Big League", "Had a pull request merged in a repository with 100+ stars.", p => p.mergedExternalPopularPr],
+  ["send", "Outside Help", "Had a pull request merged in someone else's repository.", p => p.mergedExternalPr],
+  ["rocket", "Launch Sequence", "Created a public repository and pushed to it in the same activity window.", p => p.createdAndPushed],
+  ["shuffle", "Repo Tourist", "Publicly contributed to a repository you do not own.", p => p.externalActivity],
+  ["git-commit-horizontal", "Commit Machine", "Made a public push containing 20+ commits.", p => p.bigPush],
+  ["copy", "Ctrl+C Energy", "Forked at least 5 public repositories.", p => p.forksCreated >= 5],
+  ["dice-5", "Chaos Agent", "Had public activity across 5+ different repositories recently.", p => p.activeRepos >= 5],
+  ["orbit", "Everywhere At Once", "Had public activity across 10+ different repositories recently.", p => p.activeRepos >= 10],
+  ["ghost", "Sneaky Contributor", "Had a merged PR in a repository you do not own.", p => p.mergedExternalPr],
+  ["scan-search", "Archaeologist", "Contributed to a repository created before your GitHub account.", p => p.olderRepoContribution],
+  ["party-popper", "Plot Twist", "Had a public event type you probably forgot existed.", p => p.weirdEvent],
+  ["badge", "Badge Goblin", "Unlocked at least 20 custom Flunival badges.", p => p.unlockedCount >= 20],
+  ["infinity", "Never Offline", "Had public activity on 3 different days in the recent activity window.", p => p.activeDays >= 3],
+  ["coffee", "One More Commit", "Made public activity after 10 PM.", p => p.lateNight]
 ];
 
 const stats = [
@@ -214,6 +229,46 @@ async function load(username) {
     user.accountAge = Math.floor(
       (Date.now() - new Date(user.created_at).getTime()) / (365.25 * 24 * 60 * 60 * 1000)
     );
+
+    user.topRepoForks = Math.max(0, ...repos.map(repo => repo.forks_count));
+    user.forksCreated = events.filter(event => event.type === "ForkEvent").length;
+    user.activeRepos = new Set(events.map(event => event.repo?.name).filter(Boolean)).size;
+    user.externalActivity = events.some(event => {
+      const owner = event.repo?.name?.split("/")[0];
+      return owner && owner.toLowerCase() !== user.login.toLowerCase();
+    });
+    user.mergedExternalPr = events.some(event => {
+      const owner = event.repo?.name?.split("/")[0];
+      return event.type === "PullRequestEvent" && event.payload?.pull_request?.merged && owner && owner.toLowerCase() !== user.login.toLowerCase();
+    });
+    user.activeDays = new Set(events.map(event => event.created_at?.slice(0, 10)).filter(Boolean)).size;
+    user.lateNight = events.some(event => {
+      const hour = new Date(event.created_at).getHours();
+      return hour >= 22 || hour < 1;
+    });
+    user.weirdEvent = events.some(event => ["PublicEvent", "MemberEvent", "GollumEvent", "ReleaseEvent"].includes(event.type));
+    user.createdAndPushed = events.some(event => event.type === "CreateEvent") && events.some(event => event.type === "PushEvent");
+    user.olderRepoContribution = events.some(event => {
+      const repo = repos.find(repo => repo.full_name === event.repo?.name);
+      return repo && new Date(repo.created_at) < new Date(user.created_at);
+    });
+    user.forkedPopular = events.some(event =>
+      event.type === "ForkEvent" && event.payload?.forkee?.parent?.stargazers_count >= 100
+    );
+    user.unlockedCount = badges.filter(([, , , check]) => check(user)).length;
+
+    const externalPrRepos = [...new Set(events.filter(event =>
+      event.type === "PullRequestEvent" &&
+      event.payload?.pull_request?.merged &&
+      event.repo?.name?.split("/")[0]?.toLowerCase() !== user.login.toLowerCase()
+    ).map(event => event.repo.name))];
+
+    if (externalPrRepos.length) {
+      const repoResults = await Promise.all(externalPrRepos.slice(0, 10).map(name =>
+        fetch(api + "/repos/" + name).then(response => response.ok ? response.json() : null).catch(() => null)
+      ));
+      user.mergedExternalPopularPr = repoResults.some(repo => repo?.stargazers_count >= 100);
+    }
 
     render(user);
     document.title = `#${user.login} — Flunival`;
