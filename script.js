@@ -42,7 +42,7 @@ const badges = [
   ["book-marked", "Curator", "Has at least 5 archived repositories.", p => p.archived >= 5],
   ["folder-git-2", "Monorepo Mind", "Made a public push containing 20+ commits.", p => p.bigPush],
   ["users", "Crowd Favorite", "Has at least 500 followers.", p => p.followers >= 500],
-  ["badge-check", "Established", "Has at least 50 public repositories.", p => p.public_repos >= 50]
+  ["badge-check", "Established", "Has at least 50 public repositories.", p => p.public_repos >= 50],
   ["git-fork", "Tourist", "Forked a repository with 100+ stars.", p => p.forkedPopular],
   ["landmark", "Big League", "Had a pull request merged in a repository with 100+ stars.", p => p.mergedExternalPopularPr],
   ["send", "Outside Help", "Had a pull request merged in someone else's repository.", p => p.mergedExternalPr],
