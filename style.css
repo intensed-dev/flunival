@@ -278,3 +278,25 @@ footer a:hover { color: #fff; }
   .achievement-icon { flex-basis: 36px; width: 36px; height: 36px; }
   .achievement-copy small { font-size: .68rem; }
 }
+
+.achievement.rarity-common .achievement-icon { color: #a1a1aa; background: rgba(161,161,170,.10); }
+.achievement.rarity-rare .achievement-icon { color: #60a5fa; background: rgba(96,165,250,.10); }
+.achievement.rarity-epic .achievement-icon { color: #c084fc; background: rgba(192,132,252,.10); }
+.achievement.rarity-legendary .achievement-icon { color: #fbbf24; background: rgba(251,191,36,.10); }
+.achievement.unlocked.rarity-common { border-color: rgba(161,161,170,.30); }
+.achievement.unlocked.rarity-rare { border-color: rgba(96,165,250,.35); }
+.achievement.unlocked.rarity-epic { border-color: rgba(192,132,252,.40); }
+.achievement.unlocked.rarity-legendary { border-color: rgba(251,191,36,.45); }
+.achievement-rarity {
+  width: fit-content;
+  color: currentColor;
+  font-size: .62rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.achievement.rarity-common .achievement-rarity { color: #a1a1aa; }
+.achievement.rarity-rare .achievement-rarity { color: #60a5fa; }
+.achievement.rarity-epic .achievement-rarity { color: #c084fc; }
+.achievement.rarity-legendary .achievement-rarity { color: #fbbf24; }
