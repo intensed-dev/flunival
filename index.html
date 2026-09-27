@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Flunival — custom GitHub profile badges.">
+  <title>Flunival</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <a class="brand" href="./" aria-label="Flunival home">
+        <span class="brand-mark"><i data-lucide="layers-3"></i></span>
+        <span>flunival</span>
+      </a>
+      <p class="eyebrow">GitHub profile badges</p>
+      <h1>More than a GitHub badge.</h1>
+      <p class="lead">Add clean, custom badges to your profile with a simple <code>#username</code> URL.</p>
+
+      <form id="profile-form" class="search" autocomplete="off">
+        <span class="hash">#</span>
+        <input id="username" name="username" placeholder="github username" spellcheck="false" aria-label="GitHub username">
+        <button type="submit" aria-label="Load profile">
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </form>
+      <p class="hint">Try <a href="#intensed-dev">#intensed-dev</a></p>
+    </header>
+
+    <section id="status" class="status" hidden></section>
+    <section id="profile" class="profile" hidden></section>
+
+    <section id="welcome" class="welcome">
+      <div class="welcome-icon"><i data-lucide="badge-check"></i></div>
+      <h2>Custom badges for GitHub</h2>
+      <p>Open a profile with <code>#username</code> to generate badges for followers, repositories, stars and more.</p>
+    </section>
+
+    <footer>
+      <span>Flunival</span>
+      <span>•</span>
+      <a href="https://github.com/intensed-dev/flunival">GitHub</a>
+    </footer>
+  </main>
+  <script src="./script.js"></script>
+</body>
+</html>
