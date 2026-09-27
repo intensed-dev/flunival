@@ -61,12 +61,12 @@ const badges = [
 ];
 
 const rarityRank = { common: 1, rare: 2, epic: 3, legendary: 4 };\n\nconst stats = [
-  ["users", p => p.followers, "Followers", "common"],
-  ["git-fork", p => p.public_repos, "Public repositories", "common"],
-  ["star", p => p.stars, "Repository stars", "common"],
-  ["git-pull-request", p => p.prs, "Pull requests", "common"],
-  ["circle-dot", p => p.issues, "Issues opened", "common"],
-  ["calendar-days", p => new Date(p.created_at).getFullYear(), "Joined GitHub", "common"]
+  ["users", p => p.followers, "Followers"],
+  ["git-fork", p => p.public_repos, "Public repositories"],
+  ["star", p => p.stars, "Repository stars"],
+  ["git-pull-request", p => p.prs, "Pull requests"],
+  ["circle-dot", p => p.issues, "Issues opened"],
+  ["calendar-days", p => new Date(p.created_at).getFullYear(), "Joined GitHub"]
 ];
 
 function number(value) {
@@ -115,7 +115,7 @@ function renderAchievements(profileData) {
       </div>
       <div class="achievement-grid">
         ${ranked.map(({ badge, unlocked }) => {
-          const [icon, name, description, check, rarity] = badge;
+          const icon = badge[0];\n          const name = badge[1];\n          const description = badge[2];\n          const rarity = badge[4] || "common";
           return `
             <article class="achievement ${unlocked ? "unlocked" : "locked"} rarity-${rarity}">
               <span class="achievement-icon"><i data-lucide="${icon}"></i></span>
@@ -147,7 +147,7 @@ function render(profileData) {
     ${renderAchievements(profileData)}
   `;
 
-  lucide.createIcons();
+  if (window.lucide?.createIcons) lucide.createIcons();
   profile.hidden = false;
   welcome.hidden = true;
 }
